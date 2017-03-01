@@ -1,0 +1,20 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="io.github.mayubao.android_pay.MainActivity">
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_test_wechat_pay"
+        android:orderInCategory="100"
+        android:title="@string/action_wechat_pay_test"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_test_ali_pay"
+        android:orderInCategory="100"
+        android:title="@string/action_alipay_test"
+        app:showAsAction="never" />
+</menu>

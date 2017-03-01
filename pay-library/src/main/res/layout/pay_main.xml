@@ -1,0 +1,21 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@mipmap/msp_demo_title_bg"
+        android:scaleType="center"
+        android:src="@mipmap/msp_demo_title"
+        tools:ignore="ContentDescription" />
+
+    <fragment
+        android:id="@+id/fragment"
+        android:name="io.github.mayubao.pay_library.alipay.ExternalFragment"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>
