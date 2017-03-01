@@ -3,6 +3,7 @@
 
 ## 引入
 
+### gradle
 对应的项目中的build.gradle文件添加依赖：
 
 ```
@@ -10,6 +11,17 @@ dependencies {
     //添加支付库
     compile 'io.github.mayubao:pay_library:1.0.0'
 }
+```
+
+### maven
+
+```
+<dependency>
+  <groupId>io.github.mayubao</groupId>
+  <artifactId>pay_library</artifactId>
+  <version>1.0.0</version>
+  <type>pom</type>
+</dependency>
 ```
 
 ## 使用
