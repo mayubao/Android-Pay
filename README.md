@@ -6,7 +6,7 @@
 ### gradle
 对应的项目中的build.gradle文件添加依赖：
 
-```
+```xml
 dependencies {
     //添加支付库
     compile 'io.github.mayubao:pay_library:1.0.0'
@@ -15,7 +15,7 @@ dependencies {
 
 ### maven
 
-```
+```xml
 <dependency>
   <groupId>io.github.mayubao</groupId>
   <artifactId>pay_library</artifactId>
@@ -28,7 +28,7 @@ dependencies {
 
 ### 微信支付使用
 
-```
+```java
 
         WechatPayReq wechatPayReq = new WechatPayReq.Builder()
                 .with(this) //activity实例
@@ -49,7 +49,7 @@ dependencies {
 
 ### 支付宝支付使用
 
-```
+```java
 
         AliPayAPI.Config config = new AliPayAPI.Config.Builder()
                 .setRsaPrivate(rsa_private) //设置私钥
@@ -75,7 +75,7 @@ dependencies {
 
 ## 混淆
 
-```
+```xml
 
 #pay_library
 -dontwarn io.github.mayubao.pay_library.**
