@@ -29,7 +29,7 @@ dependencies {
 ### 微信支付使用
 
 ```java
-
+        //1.创建微信支付请求
         WechatPayReq wechatPayReq = new WechatPayReq.Builder()
                 .with(this) //activity实例
                 .setAppId(appid) //微信支付AppID
@@ -40,10 +40,17 @@ dependencies {
                 .setTimeStamp(timestamp)//时间戳
                 .setSign(sign)//签名
                 .create();
-
+        //2.发送微信支付请求
         PayAPI.getInstance().sendPayRequest(wechatPayReq);
+        
+        
+        //关于微信支付的回调
+        //wechatPayReq.setOnWechatPayListener(new OnWechatPayListener);
+        
 
 ```
+
+
 
 >注意：这里没有金额设置，金额的信息已经包含在预支付码prepayid了。
 
@@ -51,13 +58,15 @@ dependencies {
 
 ```java
 
+        //1.创建支付宝支付配置
         AliPayAPI.Config config = new AliPayAPI.Config.Builder()
-                .setRsaPrivate(rsa_private) //设置私钥
-                .setRsaPublic(rsa_public)//设置公钥
+                .setRsaPrivate(rsa_private) //设置私钥 (商户私钥，pkcs8格式)
+                .setRsaPublic(rsa_public)//设置公钥(// 支付宝公钥)
                 .setPartner(partner) //设置商户
                 .setSeller(seller) //设置商户收款账号
                 .create();
 
+        //2.创建支付宝支付请求
         AliPayReq aliPayReq = new AliPayReq.Builder()
                 .with(activity)//Activity实例
                 .apply(config)//支付宝支付通用配置
@@ -69,7 +78,11 @@ dependencies {
                 .create()//
                 .setOnAliPayListener(null);//
 
+        //3.发送支付宝支付请求
         PayAPI.getInstance().sendPayRequest(aliPayReq);
+        
+        //关于支付宝支付的回调
+        //aliPayReq.setOnAliPayListener(new OnAliPayListener);
 
 ```
 
