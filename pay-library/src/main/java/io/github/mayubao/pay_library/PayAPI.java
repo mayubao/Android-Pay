@@ -32,6 +32,15 @@ public class PayAPI {
         AliPayAPI.getInstance().sendPayReq(aliPayRe);
     }
 
+    /**
+     * 支付宝支付请求 - 避免商户私钥暴露在客户端
+     * @param aliPayRe2
+     */
+    public void sendPayRequest(AliPayReq2 aliPayRe2){
+        AliPayAPI.getInstance().sendPayReq(aliPayRe2);
+    }
+
+
 
     /**
      * 微信支付请求

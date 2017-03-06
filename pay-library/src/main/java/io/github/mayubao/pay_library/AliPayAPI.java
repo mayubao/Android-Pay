@@ -6,9 +6,9 @@ package io.github.mayubao.pay_library;
  * 使用:
  * 
  * AliPayAPI.getInstance().apply(config).sendPayReq(aliPayReq);
- * 
- * @author Administrator
  *
+ * Created by mayubao on 2017/3/5.
+ * Contact me 345269374@qq.com
  */
 public class AliPayAPI {
 	
@@ -41,10 +41,23 @@ public class AliPayAPI {
     	this.mConfig = config;
     	return this;
     }
-    
+
+	/**
+	 * 发送支付宝支付请求
+	 * @param aliPayReq
+	 */
     public void sendPayReq(AliPayReq aliPayReq){
     	aliPayReq.send();
     }
+
+
+	/**
+	 * 发送支付宝支付请求
+	 * @param aliPayReq2
+	 */
+	public void sendPayReq(AliPayReq2 aliPayReq2){
+		aliPayReq2.send();
+	}
     
     
     /**

@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'//添加
 
 android {
     compileSdkVersion 23
@@ -16,6 +17,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    lintOptions {
+        abortOnError false
+    }
+
 }
 
 dependencies {
@@ -24,4 +30,15 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile files('libs/alipaySDK-20150818.jar')
     compile files('libs/libammsdk.jar')
+}
+
+
+//添加
+publish {
+    userOrg = 'mayubao'//bintray.com用户名
+    groupId = 'io.github.mayubao'//jcenter上的路径
+    artifactId = 'pay_library'//项目名称
+    publishVersion = '1.0.0'//版本号
+    desc = 'This is a pay library for android， it is very easy to use to integrated payment'//描述
+    website = 'https://github.com/mayubao/Android-Pay.git'//网站 默认github上面的
 }

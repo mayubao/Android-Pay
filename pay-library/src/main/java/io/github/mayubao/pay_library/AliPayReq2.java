@@ -12,41 +12,33 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import io.github.mayubao.pay_library.alipay.PayResult;
-import io.github.mayubao.pay_library.alipay.SignUtils;
 
 /**
- * 支付宝支付请求
+ * 支付宝支付请求2
+ *
+ * 安全的的支付宝支付流程，用法
  *
  * Created by mayubao on 2017/3/5.
  * Contact me 345269374@qq.com
  */
-public class AliPayReq {
+public class AliPayReq2 {
 
 	/**
 	 * ali pay sdk flag
 	 */
 	private static final int SDK_PAY_FLAG = 1;
 	private static final int SDK_CHECK_FLAG = 2;
-	
+
 	private Activity mActivity;
-	
-	//支付宝支付的配置
-	private AliPayAPI.Config mConfig;
-	
-	// 商户网站唯一订单号
-	private String outTradeNo;
-	// 商品名称
-	private String subject;
-	// 商品详情
-	private String body;
-	// 商品金额
-	private String price;
-	// 服务器异步通知页面路径
-	private String callbackUrl;
-	
+
+	//未签名的订单信息
+	private String rawAliPayOrderInfo;
+	//服务器签名成功的订单信息
+	private String signedAliPayOrderInfo;
+
 	private Handler mHandler;
 
-	public AliPayReq() {
+	public AliPayReq2() {
 		super();
 		mHandler = new Handler(){
 
@@ -96,24 +88,15 @@ public class AliPayReq {
 
 	/**
 	 * 发送支付宝支付请求
-	 * @param config  支付宝配置
-	 */
-	public void sendWithConfig(AliPayAPI.Config config) {
-		this.mConfig = config;
-		send();
-	}
-
-
-	/**
-	 * 发送支付宝支付请求
 	 */
 	public void send() {
 		// 创建订单信息
-		String orderInfo = getOrderInfo(this.mConfig.getPartner(),
-				this.mConfig.getSeller(), this.outTradeNo, this.subject, this.body,
-				this.price, this.callbackUrl);
-		// 对订单做RSA 签名
-		String sign = sign(orderInfo);
+//		String orderInfo = getOrderInfo(this.partner,
+//				this.seller, this.outTradeNo, this.subject, this.body,
+//				this.price, this.callbackUrl);
+		String orderInfo = rawAliPayOrderInfo;
+		// 做RSA签名之后的订单信息
+		String sign = signedAliPayOrderInfo;
 		try {
 			// 仅需对sign 做URL编码
 			sign = URLEncoder.encode(sign, "UTF-8");
@@ -183,7 +166,7 @@ public class AliPayReq {
 	 * @param callbackUrl 服务器异步通知页面路径
 	 * @return 
 	 */
-	public String getOrderInfo(String partner, String seller, String outTradeNo, String subject, String body, String price, String callbackUrl) {
+	public static String getOrderInfo(String partner, String seller, String outTradeNo, String subject, String body, String price, String callbackUrl) {
 
 		// 签约合作者身份ID
 		String orderInfo = "partner=" + "\"" + partner + "\"";
@@ -236,17 +219,6 @@ public class AliPayReq {
 
 		return orderInfo;
 	}
-	
-	
-	/**
-	 * sign the order info. 对订单信息进行签名
-	 * 
-	 * @param content
-	 *            待签名订单信息
-	 */
-	public String sign(String content) {
-		return SignUtils.sign(content, this.mConfig.getAliRsaPrivate());
-	}
 
 	/**
 	 * get the sign type we use. 获取签名方式
@@ -260,18 +232,12 @@ public class AliPayReq {
 	public static class Builder{
 		//上下文
 		private Activity activity;
-		//支付宝支付配置
-		private AliPayAPI.Config config;
-		// 商户网站唯一订单号
-		private String outTradeNo;
-		// 商品名称
-		private String subject;
-		// 商品详情
-		private String body;
-		// 商品金额
-		private String price;
-		// 服务器异步通知页面路径
-		private String callbackUrl;
+
+		//未签名的订单信息
+		private String rawAliPayOrderInfo;
+		//服务器签名成功的订单信息
+		private String signedAliPayOrderInfo;
+
 		public Builder() {
 			super();
 		}
@@ -280,81 +246,141 @@ public class AliPayReq {
 			this.activity = activity;
 			return this;
 		}
-		
-		public Builder apply(AliPayAPI.Config config){
-			this.config = config;
+
+
+		/**
+		 * 设置未签名的订单信息
+		 * @param rawAliPayOrderInfo
+		 * @return
+		 */
+		public Builder setRawAliPayOrderInfo(String rawAliPayOrderInfo){
+			this.rawAliPayOrderInfo = rawAliPayOrderInfo;
 			return this;
 		}
+
+		/**
+		 * 设置服务器签名成功的订单信息
+		 * @param signedAliPayOrderInfo
+		 * @return
+		 */
+		public Builder setSignedAliPayOrderInfo(String signedAliPayOrderInfo){
+			this.signedAliPayOrderInfo = signedAliPayOrderInfo;
+			return this;
+		}
+
+		public AliPayReq2 create(){
+			AliPayReq2 aliPayReq = new AliPayReq2();
+			aliPayReq.mActivity = this.activity;
+			aliPayReq.rawAliPayOrderInfo = this.rawAliPayOrderInfo;
+			aliPayReq.signedAliPayOrderInfo = this.signedAliPayOrderInfo;
+
+			return aliPayReq;
+		}
 		
+	}
+
+
+	/**
+	 * 支付宝支付订单信息的信息类
+	 *
+	 * 官方demo是暴露了商户私钥，pkcs8格式的，这是极其不安全的。官方也建议私钥签名订单这一块放到服务器去处理。
+	 * 所以为了避免商户私钥暴露在客户端，订单的加密过程放到服务器去处理
+	 */
+	public static class AliOrderInfo{
+		String partner;
+		String seller;
+		String outTradeNo;
+		String subject;
+		String body;
+		String price;
+		String callbackUrl;
+
+		/**
+		 * 设置商户
+		 * @param partner
+		 * @return
+		 */
+		public AliOrderInfo setPartner(String partner){
+			this.partner = partner;
+			return this;
+		}
+
+		/**
+		 * 设置商户账号
+		 * @param seller
+		 * @return
+		 */
+		public AliOrderInfo setSeller(String seller){
+			this.seller = seller;
+			return this;
+		}
+
 		/**
 		 * 设置唯一订单号
 		 * @param outTradeNo
 		 * @return
 		 */
-		public Builder setOutTradeNo(String outTradeNo){
+		public AliOrderInfo setOutTradeNo(String outTradeNo){
 			this.outTradeNo = outTradeNo;
 			return this;
 		}
-		
+
 		/**
 		 * 设置订单标题
 		 * @param subject
 		 * @return
 		 */
-		public Builder setSubject(String subject){
+		public AliOrderInfo setSubject(String subject){
 			this.subject = subject;
 			return this;
 		}
-		
+
 		/**
-		 * 设置订单内容
+		 * 设置订单详情
 		 * @param body
 		 * @return
 		 */
-		public Builder setBody(String body){
+		public AliOrderInfo setBody(String body){
 			this.body = body;
 			return this;
 		}
-		
+
 		/**
-		 * 设置订单价格
+		 * 设置价格
 		 * @param price
 		 * @return
 		 */
-		public Builder setPrice(String price){
+		public AliOrderInfo setPrice(String price){
 			this.price = price;
 			return this;
 		}
-		
+
 		/**
-		 * 设置回调
+		 * 设置请求回调
 		 * @param callbackUrl
 		 * @return
 		 */
-		public Builder setCallbackUrl(String callbackUrl){
+		public AliOrderInfo setCallbackUrl(String callbackUrl){
 			this.callbackUrl = callbackUrl;
 			return this;
 		}
-		
-		public AliPayReq create(){
-			AliPayReq aliPayReq = new AliPayReq();
-			aliPayReq.mActivity = this.activity;
-			aliPayReq.mConfig = this.config;
-			aliPayReq.outTradeNo = this.outTradeNo;
-			aliPayReq.subject = this.subject;
-			aliPayReq.body = this.body;
-			aliPayReq.price = this.price;
-			aliPayReq.callbackUrl = this.callbackUrl;
-			
-			return aliPayReq;
+
+		/**
+		 * 创建订单详情
+		 * @return
+		 */
+		public String createOrderInfo(){
+//			(String partner, String seller, String outTradeNo, String subject, String body, String price, String callbackUrl) {
+			return getOrderInfo(partner, seller, outTradeNo, subject, body, price, callbackUrl);
 		}
-		
 	}
+
+
 	
 	
 	//支付宝支付监听
 	private OnAliPayListener mOnAliPayListener;
-	public AliPayReq setOnAliPayListener(OnAliPayListener onAliPayListener) {
+	public AliPayReq2 setOnAliPayListener(OnAliPayListener onAliPayListener) {
 		this.mOnAliPayListener = onAliPayListener;
 		return this;
 	}

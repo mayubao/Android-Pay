@@ -191,7 +191,7 @@ public class WechatPayReq implements IWXAPIEventHandler {
 	}
 	
 	
-	//支付宝支付监听
+	//微信支付监听
 	private OnWechatPayListener mOnWechatPayListener;
 	public WechatPayReq setOnWechatPayListener(OnWechatPayListener onWechatPayListener) {
 		this.mOnWechatPayListener = onWechatPayListener;
@@ -231,7 +231,6 @@ public class WechatPayReq implements IWXAPIEventHandler {
             	}else{//  -1	错误       -2	用户取消
             		this.mOnWechatPayListener.onPayFailure(resp.errCode);	
             	}
-            	
             }
         }
 	}

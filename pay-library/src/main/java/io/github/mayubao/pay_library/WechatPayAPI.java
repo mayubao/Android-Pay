@@ -6,9 +6,9 @@ package io.github.mayubao.pay_library;
  * 使用:
  * 
  * WechatPayAPI.getInstance().sendPayReq(wechatPayReq);
- * 
- * @author Administrator
  *
+ * Created by mayubao on 2017/3/5.
+ * Contact me 345269374@qq.com
  */
 public class WechatPayAPI {
 
