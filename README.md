@@ -5,7 +5,7 @@ A pay libary for Android, and which support Wechat pay and Ali pay.
  And developer can easily use Wechat pay in two line code.
  And developer can easily use Ali pay in three line code.
 
-## Include
+## Setup
 
 ### gradle
 add these code in your app **build.gradle** as follow:
