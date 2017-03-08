@@ -1,7 +1,7 @@
 # Android-Pay
 [中文](https://github.com/mayubao/Android-Pay/blob/master/README_CN.md)
 
-A pay libary for Android, and which support Wechat pay and Ali pay.
+A pay library for Android, and which support Wechat pay and Ali pay.
  And developer can easily use Wechat pay in two line code.
  And developer can easily use Ali pay in three line code.
 
