@@ -8,7 +8,7 @@ A pay libary for Android, and which support Wechat pay and Ali pay.
 ## Setup
 
 ### gradle
-add these code in your app **build.gradle** as follow:
+add these code in the file **build.gradle** as follow:
 
 ```xml
 dependencies {
@@ -30,7 +30,7 @@ dependencies {
 
 ## Usage
 
-### Wechat Pay Usage
+### Wechat Pay
 
 ```java
         //1.create request for wechat pay
@@ -56,10 +56,10 @@ dependencies {
 
 >Notes：WechatPayReq have no method to set the money, because the money info is include in the parameter 'prepayid'.
 
-### Ali Pay Usage
+### Ali Pay 
 
 
-#### Ali Pay first way(**Not Recommend**, and its partner rsa private key export in the client , it is very dangerous!)
+#### First way(**Not Recommend**, and its partner rsa private key export in the client , it is very dangerous!)
 ```java
 
         //step 1 create config for ali pay
@@ -90,7 +90,7 @@ dependencies {
 
 ```
 
-#### Ali Pay second way(**Highly Recommend**)
+#### Second way(**Highly Recommend**)
 
 ```java
         //step 1 create raw ali pay order info
