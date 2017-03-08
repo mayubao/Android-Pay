@@ -12,7 +12,7 @@ add these code in the file **build.gradle** as follow:
 
 ```xml
 dependencies {
-    //add pay libaray
+    //add pay library
     compile 'io.github.mayubao:pay_library:1.0.0'
 }
 ```
