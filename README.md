@@ -1,14 +1,18 @@
 # Android-Pay
-支持微信和支付宝两种主流支付的集成库， 两行代码实现微信支付， 三行代码实现支付宝支付
+[中文](https://github.com/mayubao/Android-Pay/blob/master/README_CN.md)
 
-## 引入
+A pay library for Android, and which support Wechat pay and Ali pay.
+ And developer can easily use Wechat pay in two line code.
+ And developer can easily use Ali pay in three line code.
+
+## Setup
 
 ### gradle
-对应的项目中的build.gradle文件添加依赖：
+add these code in the file **build.gradle** as follow:
 
 ```xml
 dependencies {
-    //添加支付库
+    //add pay library
     compile 'io.github.mayubao:pay_library:1.0.1'
 }
 ```
@@ -24,69 +28,104 @@ dependencies {
 </dependency>
 ```
 
-## 使用
+## Usage
 
-### 微信支付使用
+### Wechat Pay
 
 ```java
-        //1.创建微信支付请求
+        //1.create request for wechat pay
         WechatPayReq wechatPayReq = new WechatPayReq.Builder()
-                .with(this) //activity实例
-                .setAppId(appid) //微信支付AppID
-                .setPartnerId(partnerid)//微信支付商户号
-                .setPrepayId(prepayid)//预支付码
+                .with(this) //activity instance
+                .setAppId(appid) //wechat pay AppID
+                .setPartnerId(partnerid)//wechat pay partner id
+                .setPrepayId(prepayid)//pre pay id
 //								.setPackageValue(wechatPayReq.get)//"Sign=WXPay"
                 .setNonceStr(noncestr)
-                .setTimeStamp(timestamp)//时间戳
-                .setSign(sign)//签名
+                .setTimeStamp(timestamp)//time stamp
+                .setSign(sign)//sign
                 .create();
-        //2.发送微信支付请求
+        //2. send the request with wechat pay
         PayAPI.getInstance().sendPayRequest(wechatPayReq);
-        
-        
-        //关于微信支付的回调
+
+
+        //set the callback for wechat pay
         //wechatPayReq.setOnWechatPayListener(new OnWechatPayListener);
-        
+
 
 ```
 
+>Notes：WechatPayReq have no method to set the money, because the money info is include in the parameter 'prepayid'.
+
+### Ali Pay 
 
 
->注意：这里没有金额设置，金额的信息已经包含在预支付码prepayid了。
-
-### 支付宝支付使用
-
+#### First way(**Not Recommend**, and its partner rsa private key export in the client , it is very dangerous!)
 ```java
 
-        //1.创建支付宝支付配置
+        //step 1 create config for ali pay
         AliPayAPI.Config config = new AliPayAPI.Config.Builder()
-                .setRsaPrivate(rsa_private) //设置私钥 (商户私钥，pkcs8格式)
-                .setRsaPublic(rsa_public)//设置公钥(// 支付宝公钥)
-                .setPartner(partner) //设置商户
-                .setSeller(seller) //设置商户收款账号
+                .setRsaPrivate(rsa_private) // rsa private key from partner (pkcs8 format)
+                .setRsaPublic(rsa_public)//ali rsa public key
+                .setPartner(partner) //set partner
+                .setSeller(seller) //set partner seller accout
                 .create();
 
-        //2.创建支付宝支付请求
+        //step 2 create reqeust for ali
         AliPayReq aliPayReq = new AliPayReq.Builder()
-                .with(activity)//Activity实例
-                .apply(config)//支付宝支付通用配置
-                .setOutTradeNo(outTradeNo)//设置唯一订单号
-                .setPrice(price)//设置订单价格
-                .setSubject(orderSubject)//设置订单标题
-                .setBody(orderBody)//设置订单内容 订单详情
-                .setCallbackUrl(callbackUrl)//设置回调地址
+                .with(activity)//Activity instance
+                .apply(config)// the above custome config
+                .setOutTradeNo(outTradeNo)//set unique trade no
+                .setPrice(price)//set price
+                .setSubject(orderSubject)//set order subject
+                .setBody(orderBody)//set order detail
+                .setCallbackUrl(callbackUrl)//set callback for pay reqest
                 .create()//
                 .setOnAliPayListener(null);//
 
-        //3.发送支付宝支付请求
+        //step 3 send the request for ali pay
         PayAPI.getInstance().sendPayRequest(aliPayReq);
-        
-        //关于支付宝支付的回调
+
+        // set the ali pay callback
         //aliPayReq.setOnAliPayListener(new OnAliPayListener);
 
 ```
 
-## 混淆
+#### Second way(**Highly Recommend**)
+
+```java
+        //step 1 create raw ali pay order info
+        String rawAliOrderInfo = new AliPayReq2.AliOrderInfo()
+                .setPartner(partner) //set partner
+                .setSeller(seller)  //set partner seller accout
+                .setOutTradeNo(outTradeNo) //set unique trade no
+                .setSubject(orderSubject) //set order subject
+                .setBody(orderBody) //set order detail
+                .setPrice(price) //set price
+                .setCallbackUrl(callbackUrl) //set callback for pay reqest
+                .createOrderInfo(); //create ali pay order info
+
+
+        //step 2 get the signed ali pay order info
+        String signAliOrderInfo = getSignAliOrderInfoFromServer(rawAliOrderInfo);
+
+        //step 3 step 3 send the request for ali pay
+        AliPayReq2 aliPayReq = new AliPayReq2.Builder()
+                .with(activity)//Activity instance
+                .setSignedAliPayOrderInfo(signAliOrderInfo)
+                .setRawAliPayOrderInfo(rawAliOrderInfo)//set the ali pay order info
+                .setSignedAliPayOrderInfo(signAliOrderInfo) //set the signed ali pay order info
+                .create()//
+                .setOnAliPayListener(null);//
+        PayAPI.getInstance().sendPayRequest(aliPayReq);
+
+
+        //set the ali pay callback
+        //aliPayReq.setOnAliPayListener(new OnAliPayListener);
+
+```
+
+
+## Proguard
 
 ```xml
 
@@ -114,58 +153,38 @@ dependencies {
 ```
 
 
-## 文档
+## Document
 
-### 微信支付官方文档 支付流程
+###  wehcat pay official document
 https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=8_5
 
-### 支付宝支付官方文档 支付流程
+###  ali pay official document
 https://doc.open.alipay.com/docs/doc.htm?spm=a219a.7629140.0.0.sdGXaH&treeId=204&articleId=105296&docType=1
-  
 
 
-## 注意
+## Help
+If it is helpful to you, could you buy me a cup of coffee?
 
-### 微信支付
-
- - 微信支付必须要在**正式签名**和**正确包名**的应用中才能成功调起。(**重点)
-
-    即商户在微信开放平台申请开发应用后对应包名和对应签名的应用才能成功调起。
-    详情请参考微信支付的开发流程文档。
-    
-    https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=8_5
-    
- - 微信支付API没有在客户端显示的设置回调，回调是在Server端设置的。(与支付宝支付的区别，支付宝的回调是在客户端设置的)
-    
-### 支付宝支付 
-
- - 支付宝支付为了保证交易双方的身份和数据安全， 需要配置双方密钥。
-
-    详情请参考支付宝支付的密钥处理体系文档。
-    
-    https://doc.open.alipay.com/docs/doc.htm?spm=a219a.7629140.0.0.1wPnBT&treeId=204&articleId=106079&docType=1
-
-## 打赏
-如果你觉得此项目对你有用，能否赏我一杯咖啡呢？
-
-### 微信支付
+### Wechat
 ![](http://img.blog.csdn.net/20170302140650271)
-### 支付宝支付
+### Ali
 ![支付宝支付](http://img.blog.csdn.net/20170302140734345)
 
 
+## Lisence
 
     Copyright 2017 mayubao
-    
+
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
-    
+
         http://www.apache.org/licenses/LICENSE-2.0
-    
+
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
+
 
