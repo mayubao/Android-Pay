@@ -9,7 +9,7 @@
 ```xml
 dependencies {
     //添加支付库
-    compile 'io.github.mayubao:pay_library:1.0.0'
+    compile 'io.github.mayubao:pay_library:1.0.1'
 }
 ```
 
@@ -19,7 +19,7 @@ dependencies {
 <dependency>
   <groupId>io.github.mayubao</groupId>
   <artifactId>pay_library</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <type>pom</type>
 </dependency>
 ```
