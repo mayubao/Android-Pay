@@ -120,14 +120,8 @@ public class MainActivity extends AppCompatActivity {
 
         AliPayReq2 aliPayReq = new AliPayReq2.Builder()
                 .with(activity)//Activity实例
-                .setSignedAliPayOrderInfo(signAliOrderInfo)
-                .setPartner(partner)
-                .setSeller(seller)
-                .setOutTradeNo(outTradeNo)//设置唯一订单号
-                .setPrice(price)//设置订单价格
-                .setSubject(orderSubject)//设置订单标题
-                .setBody(orderBody)//设置订单内容 订单详情
-                .setCallbackUrl(callbackUrl)//设置回调地址
+                .setRawAliPayOrderInfo(rawAliOrderInfo)//set the ali pay order info
+                .setSignedAliPayOrderInfo(signAliOrderInfo) //set the signed ali pay order info
                 .create()//
                 .setOnAliPayListener(null);//
         AliPayAPI.getInstance().sendPayReq(aliPayReq);

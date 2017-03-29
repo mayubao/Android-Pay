@@ -38,7 +38,7 @@ publish {
     userOrg = 'mayubao'//bintray.com用户名
     groupId = 'io.github.mayubao'//jcenter上的路径
     artifactId = 'pay_library'//项目名称
-    publishVersion = '1.0.0'//版本号
+    publishVersion = '1.0.1'//版本号
     desc = 'This is a pay library for android， it is very easy to use to integrated payment'//描述
     website = 'https://github.com/mayubao/Android-Pay.git'//网站 默认github上面的
 }
