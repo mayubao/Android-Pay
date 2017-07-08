@@ -132,6 +132,7 @@ dependencies {
         
     How to do ：
     
+    
     1.new folder named 'wxapi' under your project root package
     
     2.and create class WXPayEntryActivity under the wxapi 
