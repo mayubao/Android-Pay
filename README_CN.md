@@ -119,6 +119,97 @@ dependencies {
         //aliPayReq.setOnAliPayListener(new OnAliPayListener);
 ```
 
+## 存在的问题
+
+### 微信支付回调的问题
+
+    之前微信支付是可以支付的，但是存在一个问题，就是微信支付回调的问题，我一直在寻找不同于官方的那样的回调方法，但是还是没有找到，只能想微信支付妥协~如果你想要微信支付的回调，还是可以实现的，只是做法跟微信支付官方文档一样。
+        
+        
+    解决方案：
+    
+    1.在你的项目的包名下面新建wxapi包，
+    2.新建一个WXPayEntryActivity类，
+    3.实现IWXAPIEventHandler接口
+    4.在你对应的地方注册接收微信支付的广播即可
+    
+    注意：
+    
+    1.下面的是示例代码中的APP_ID需要替换为自己的
+    2.下面的是示例代码中的WeChatPayReceiver需要自己定义
+    
+    下面是示例代码：
+    
+    
+ ```java
+ 
+ import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.tencent.mm.sdk.constants.ConstantsAPI;
+import com.tencent.mm.sdk.modelbase.BaseReq;
+import com.tencent.mm.sdk.modelbase.BaseResp;
+import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
+
+public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler{
+
+	private static final String TAG = "MicroMsg.SDKSample.WXPayEntryActivity";
+	
+    private IWXAPI api;
+	
+	//TODO　这里需要替换你的APP_ID
+    private String APP_ID = "wx0xxxxxxxxx"; //这里需要替换你的APP_ID
+    
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.pay_result);
+        
+    	api = WXAPIFactory.createWXAPI(this, APP_ID);
+        api.handleIntent(getIntent(), this);
+    }
+
+	@Override
+	protected void onNewIntent(Intent intent) {
+		super.onNewIntent(intent);
+		setIntent(intent);
+        api.handleIntent(intent, this);
+	}
+
+	@Override
+	public void onReq(BaseReq req) {
+	}
+
+	@Override
+	public void onResp(BaseResp resp) {
+		Log.d(TAG, "onPayFinish, errCode = " + resp.errCode);
+
+		if (resp.getType() == ConstantsAPI.COMMAND_PAY_BY_WX) {
+//			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//			builder.setTitle(R.string.app_tip);
+//			builder.setMessage(getString(R.string.pay_result_callback_msg, String.valueOf(resp.errCode)));
+//			builder.show();
+
+            //以下是自定义微信支付广播的发送，微信支付广播请自己定义
+
+			Intent intent = new Intent();
+			intent.setAction(WeChatPayReceiver.ACTION_PAY_RESULT);
+			intent.putExtra("result", resp.errCode);
+			sendBroadcast(intent);
+			
+			finish();
+		}
+	}
+}
+
+ ```
+
 ## 混淆
 
 ```xml
